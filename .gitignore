@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# API Keys
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Skill output (parsed results)
+output/
+*.parsed.md
+*.parsed.json
