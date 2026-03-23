@@ -1,4 +1,4 @@
-# somark-document-parser
+# SoMark Skills
 
 [中文](./README.zh-CN.md)
 
@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npx skills add https://github.com/SoMarkAI/somark-document-parser
+npx skills add https://github.com/SoMarkAI/skills
 ```
 
 Works with Claude Code, Cursor, Cline, OpenCode, and [40+ other agents](https://skills.sh).
