@@ -1,5 +1,7 @@
 # somark-document-parser
 
+[中文](./README.zh-CN.md)
+
 > Official [SoMark](https://somark.ai) skills collection for document parsing, image OCR, and intelligent extraction — built for AI agent workflows.
 
 ## Install

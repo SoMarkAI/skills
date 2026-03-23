@@ -1,5 +1,7 @@
 # somark-document-parser
 
+[English](./README.md)
+
 > [SoMark](https://somark.ai) 官方 Skills 合集，涵盖文档解析、图片 OCR 及智能提取 —— 专为 AI Agent 工作流设计。
 
 ## 安装
