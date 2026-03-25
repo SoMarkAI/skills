@@ -20,6 +20,12 @@ Works with Claude Code, Cursor, Cline, OpenCode, and [40+ other agents](https://
 |-------|-------------|
 | **somark-document-parser** | Parse PDFs, Word, PowerPoint, and images into structured Markdown or JSON |
 | **image-parser** | Extract text with bounding-box coordinates from images (OCR + precise location) |
+| **document-diff** | Compare two documents and generate a structured diff report showing changes, additions, and deletions |
+| **contract-reviewer** | Review contracts for risks, unfair clauses, missing provisions, and key obligations with severity ratings |
+| **resume-parser** | Parse resumes and CVs into structured JSON profiles with opinionated candidate assessment |
+| **tender-analyzer** | Extract qualification requirements, scoring criteria, deadlines, and submission checklists from procurement documents |
+| **paper-digest** | Deeply analyze academic papers into structured research cards covering methods, results, and contributions |
+| **financial-report-analyzer** | Extract financial metrics, risk signals, and management commentary from annual reports and earnings releases |
 
 ---
 
@@ -40,7 +46,12 @@ The image-parser skill goes further: it returns every text block with its exact 
 
 - "Parse this PDF for me"
 - "Extract the key clauses from this contract"
+- "Review this contract for risks"
+- "Parse this resume and give me a candidate assessment"
+- "Analyze this annual report"
 - "Summarize the paper I just uploaded"
+- "What changed between these two documents?"
+- "Analyze this tender document — what are the qualification requirements?"
 - "Convert this document to Markdown"
 - "What does this image say?"
 - "Extract all text with bounding boxes from this image"
