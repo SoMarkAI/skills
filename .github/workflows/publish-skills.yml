@@ -49,3 +49,6 @@ jobs:
               echo "⚠️ $slug@$version failed (slug taken or version exists), skipping"
             fi
           done
+
+      - name: Update skills.sh index
+        run: npx -y skills add somarkai/skills --all
