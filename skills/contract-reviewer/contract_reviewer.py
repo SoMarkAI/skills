@@ -294,7 +294,7 @@ async def main() -> None:
 
     md_path = output_dir / f"{file_path.stem}.md"
     json_path = output_dir / f"{file_path.stem}.json"
-    somarkdown_path = output_dir / f"{file_path.stem}.somarkdown"
+    somarkdown_path = output_dir / f"{file_path.stem}.md"
 
     if md_content:
         md_path.write_text(md_content, encoding="utf-8")
