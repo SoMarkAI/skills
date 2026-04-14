@@ -38,7 +38,7 @@ SUPPORTED_ELEMENT_FORMATS = {
     "cs": ["image"],
 }
 
-SUPPORTED_FEATURE_CONFIGS = {
+DEFAULT_FEATURE_CONFIGS = {
     "enable_text_cross_page": False,
     "enable_table_cross_page": False,
     "enable_title_level_recognition": False,
@@ -293,9 +293,9 @@ async def main() -> None:
     feature_config = args.feature_config
 
     for k, v in feature_config.items():
-        if k not in SUPPORTED_FEATURE_CONFIGS:
+        if k not in DEFAULT_FEATURE_CONFIGS:
             print(
-                f"不支持的功能配置: {k}，仅支持: {', '.join(SUPPORTED_FEATURE_CONFIGS.keys())}"
+                f"不支持的功能配置: {k}，仅支持: {', '.join(DEFAULT_FEATURE_CONFIGS.keys())}"
             )
             raise SystemExit(1)
         if not isinstance(v, bool):
