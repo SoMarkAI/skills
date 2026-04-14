@@ -70,7 +70,7 @@ Supported values:
 | `json`       | Save the raw SoMark JSON output               |
 | `somarkdown` | Save the parsed contract as a SoMarkDown file |
 
-Recommended usage:
+Example:
 
 ```bash
 --output-formats '["markdown", "json"]'

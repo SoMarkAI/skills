@@ -113,7 +113,6 @@ def parse_args() -> argparse.Namespace:
         "--output-formats",
         type=parse_json_list,
         required=True,
-        default=["markdown", "json"],
         help='输出格式，传 JSON 数组，例如 \'["markdown", "json"]\'',
     )
 
@@ -142,12 +141,12 @@ def parse_args() -> argparse.Namespace:
 
 
 async def submit_task(
-        session: aiohttp.ClientSession,
-        file_path: Path,
-        api_key: str,
-        output_formats: list[str],
-        element_formats: dict[str, str],
-        feature_config: dict[str, bool],
+    session: aiohttp.ClientSession,
+    file_path: Path,
+    api_key: str,
+    output_formats: list[str],
+    element_formats: dict[str, str],
+    feature_config: dict[str, bool],
 ) -> str:
     data = aiohttp.FormData()
 
@@ -171,16 +170,16 @@ async def submit_task(
 
 
 async def poll_task(
-        session: aiohttp.ClientSession,
-        task_id: str,
-        api_key: str,
-        max_retries: int = 300,
-        interval: int = 2,
+    session: aiohttp.ClientSession,
+    task_id: str,
+    api_key: str,
+    max_retries: int = 300,
+    interval: int = 2,
 ) -> dict:
     for _ in range(max_retries):
         await asyncio.sleep(interval)
         async with session.post(
-                CHECK_URL, data={"api_key": api_key, "task_id": task_id}
+            CHECK_URL, data={"api_key": api_key, "task_id": task_id}
         ) as resp:
             if resp.status != 200:
                 continue
@@ -294,7 +293,7 @@ async def main() -> None:
 
     md_path = output_dir / f"{file_path.stem}.md"
     json_path = output_dir / f"{file_path.stem}.json"
-    somarkdown_path = output_dir / f"{file_path.stem}.md"
+    somarkdown_path = output_dir / f"{file_path.stem}-smd.md"
 
     if md_content:
         md_path.write_text(md_content, encoding="utf-8")
@@ -307,7 +306,7 @@ async def main() -> None:
         print(f"  JSON 已保存: {json_path}")
     if somarkdown_content:
         somarkdown_path.write_text(somarkdown_content, encoding="utf-8")
-        print(f"  Somarkdown 已保存: {somarkdown_path}")
+        print(f"  SomarkDown 已保存: {somarkdown_path}")
 
     summary = {
         "file": str(file_path),
