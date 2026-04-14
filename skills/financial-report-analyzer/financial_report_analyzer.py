@@ -110,7 +110,7 @@ def parse_args() -> argparse.Namespace:
         "--output-formats",
         type=parse_json_list,
         required=True,
-        help='输出格式，传 JSON 数组，例如 \'["markdown", "json", "somarkdown"]\'',
+        help='输出格式，传 JSON 数组，例如 \'["markdown", "json"]\'',
     )
     parser.add_argument(
         "--element-formats",
