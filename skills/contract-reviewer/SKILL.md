@@ -150,7 +150,7 @@ Example:
 
 - `<filename>.md` — full contract in Markdown (preserves clause structure)
 - `<filename>.json` — raw SoMark JSON (blocks with positions)
-- `<filename>.somarkdown` — contract content in SoMarkDown format when requested
+- `<filename>-smd.md` — contract content in SoMarkDown format when requested
 - `parse_summary.json` — metadata (file path, elapsed time)
 
 ---
