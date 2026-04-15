@@ -18,8 +18,8 @@ Works with Claude Code, Cursor, Cline, OpenCode, and [40+ other agents](https://
 
 | Skill | Description |
 |-------|-------------|
-| **somark-document-parser** | Parse PDFs, Word, PowerPoint, and images into structured Markdown or JSON |
-| **image-parser** | Extract text with bounding-box coordinates from images (OCR + precise location) |
+| **somark-document-parser** | Parse PDFs, Word, PowerPoint, and images into structured Markdown, JSON, or SoMarkDown |
+| **image-parser** | Core image OCR capability that returns text with precise coordinates (OCR + location awareness) |
 | **document-diff** | Compare two documents and generate a structured diff report showing changes, additions, and deletions |
 | **contract-reviewer** | Review contracts for risks, unfair clauses, missing provisions, and key obligations with severity ratings |
 | **resume-parser** | Parse resumes and CVs into structured JSON profiles with opinionated candidate assessment |
@@ -32,7 +32,7 @@ Works with Claude Code, Cursor, Cline, OpenCode, and [40+ other agents](https://
 
 ## What it does
 
-When you share a document with your AI agent, SoMark parses it into structured Markdown or JSON that the agent can actually reason over — not just OCR'd text, but proper headings, tables, formulas, and layout.
+When you share a document with your AI agent, SoMark parses it into structured Markdown, JSON, or SoMarkDown that the agent can actually reason over — not just OCR'd text, but proper headings, tables, formulas, and layout.
 
 The image-parser skill goes further: it returns every text block with its exact pixel coordinates on the original image, enabling field extraction, region location, and document automation.
 
