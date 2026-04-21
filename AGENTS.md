@@ -25,15 +25,15 @@ Each skill has three files: `SKILL.md` (frontmatter with name/description/metada
 
 ## Key Architecture Differences Between Skills
 
-- **image-parser** uses the **sync** SoMark endpoint (`/extract/acc_sync`) and stdlib-only (`urllib`). No external dependencies.
-- All other skills use the **async** SoMark endpoint (`/extract/async` + `/extract/async_check` polling) and require `aiohttp`.
+- **image-parser** uses the **sync** SoMark endpoint (`/parse/sync`) and stdlib-only (`urllib`). No external dependencies.
+- All other skills use the **async** SoMark endpoint (`/parse/async` + `/parse/async_check` polling) and require `aiohttp`.
 - **pitch-screener** additionally uses web search (via available MCP tools) for background research after parsing.
 
 ## Running the Scripts
 
 ```bash
 # Image parser (single file)
-python skills/image-parser/image_parser.py -f <image_path> -o <output_dir>
+python skills/image-parser/image_parser.py -f <image_path> -o <output_dir> 
 
 # Image parser (directory)
 python skills/image-parser/image_parser.py -d <image_dir> -o <output_dir>
