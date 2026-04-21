@@ -76,9 +76,32 @@ python image_parser.py -d <image_dir> -o <output_dir>
 
 ### Optional parser settings
 
+#### `--output-formats` (Optional)
+
+This argument is optional in the current script. Pass a JSON array of one or more output formats.
+
+If omitted, the default value is:
+
+```json
+["markdown", "json"]
+```
+
+Supported values:
+
+| Value        | Description                                   |
+| ------------ | --------------------------------------------- |
+| `markdown`   | Save the parsed contract as a Markdown file   |
+| `json`       | Save the parsed contract as a JSON output          |
+
+Example:
+
+```bash
+--output-formats '["markdown", "json"]'
+```
+
 #### `--element-formats` (Optional)
 
-This argument controls how specific element types are rendered in the SoMark parser output. The current script always requests JSON, Markdown, and SoMarkdown internally, then builds `*.text_bbox.json` from `outputs.json`.
+This argument controls how specific element types are rendered in the SoMark parser output. The current script always requests JSON, Markdown internally, then builds `*.text_bbox.json` from `outputs.json`.
 
 If omitted, the default value is:
 
@@ -193,7 +216,6 @@ Default output per image:
 
 - `*.text_bbox.json` — primary output; structured OCR data with `text`, `bbox`, `page`, and `role` (always written)
 - `*.md` — auxiliary Markdown text view (written only if SoMark returns markdown)
-- `*-smd.md` — auxiliary SoMarkdown text view (written only if SoMark returns somarkdown)
 - `results_index.json` — index of all parsed files in the run
 
 Optional extra files when flags are enabled:
@@ -206,7 +228,9 @@ If parsing fails:
 
 - `1107`: Invalid API Key — ask the user to verify `SOMARK_API_KEY`.
 - `2000`: Invalid request parameters — check the file path and format.
-- Invalid JSON in `--element-formats` or `--feature-config`: ask the user to provide valid JSON syntax.
+
+- Invalid JSON in `--output-formats`, `--element-formats` or `--feature-config`: ask the user to provide valid JSON syntax.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
 - Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
 - Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - `429` / quota exceeded: ask the user to top up or request free quota at https://somark.tech/workbench/purchase.

@@ -21,6 +21,8 @@ SUPPORTED_IMAGE_EXTENSIONS = {
 }
 SOMARK_SYNC_URL = "https://somark.tech/api/v1/parse/sync"
 
+SUPPORTED_OUTPUT_FORMATS = {"markdown", "json"}
+
 
 SUPPORTED_ELEMENT_FORMATS = {
     "image": ["url", "base64", "none"],
@@ -46,6 +48,17 @@ SUPPORTED_FEATURE_CONFIGS = {
     "keep_header_footer": False,
 }
 
+def parse_json_list(value: str) -> list[str]:
+    try:
+        parsed = json.loads(value)
+
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(f"数组参数必须是合法 JSON: {exc}") from exc
+
+    if not isinstance(parsed, list):
+        raise argparse.ArgumentTypeError(
+            '数组参数必须是 JSON 数组，例如 \'["markdown", "json"]\''
+        )
 
 def parse_json_dict(value: str) -> dict[str, Any]:
     try:
@@ -102,6 +115,15 @@ def parse_args() -> argparse.Namespace:
         "--include-without-bbox",
         action="store_true",
         help="include text items even if bbox is not found",
+    )
+
+
+
+    parser.add_argument(
+        "--output-formats",
+        type=parse_json_list,
+        default=["markdown", "json"],
+        help='output formats as a JSON array, for example \'["markdown", "json"]\'',
     )
 
     parser.add_argument(
@@ -169,6 +191,7 @@ def is_number(value: Any) -> bool:
 def build_multipart_data(
     file_path: Path,
     api_key: str,
+    output_formats: list[str],
     element_formats: dict[str, str],
     feature_config: dict[str, bool],
 ) -> tuple[str, bytes]:
@@ -183,9 +206,10 @@ def build_multipart_data(
         body.extend(value.encode("utf-8"))
         body.extend(b"\r\n")
 
-    add_text_field("output_formats", "json")
-    add_text_field("output_formats", "markdown")
-    add_text_field("output_formats", "somarkdown")
+
+
+    for output_format in output_formats:
+        add_text_field("output_formats", output_format)
 
     add_text_field("api_key", api_key)
     add_text_field("element_formats", json.dumps(element_formats, ensure_ascii=False))
@@ -211,6 +235,7 @@ def call_somark_sync(
     file_path: Path,
     timeout: int,
     api_key: str,
+    output_formats: list[str],
     element_formats: dict[str, str],
     feature_config: dict[str, bool],
     retries: int = 0,
@@ -222,6 +247,7 @@ def call_somark_sync(
         boundary, body = build_multipart_data(
             file_path=file_path,
             api_key=api_key,
+            output_formats=output_formats,
             element_formats=element_formats,
             feature_config=feature_config,
         )
@@ -315,7 +341,7 @@ def build_outputs(
     response: dict[str, Any],
     image_path: Path,
     include_without_bbox: bool,
-) -> tuple[dict[str, Any], dict[str, Any], str | None, str | None]:
+) -> tuple[dict[str, Any], dict[str, Any], str | None]:
     code = response.get("code")
     message = response.get("message", "")
     if code not in (0, 200):
@@ -327,7 +353,7 @@ def build_outputs(
 
     raw_json = outputs.get("json")
     markdown = outputs.get("markdown")
-    somarkdown = outputs.get("somarkdown")
+
     if not isinstance(raw_json, dict):
         raise RuntimeError("SoMark 返回结果缺少 outputs.json")
 
@@ -350,7 +376,6 @@ def build_outputs(
         raw_json,
         text_bbox,
         markdown if isinstance(markdown, str) else None,
-        somarkdown if isinstance(somarkdown, str) else None,
     )
 
 
@@ -372,6 +397,14 @@ def main() -> None:
     args = parse_args()
     input_path, images = resolve_input_and_images(args)
     api_key = resolve_api_key(args)
+
+    output_formats = [output_format.strip() for output_format in args.output_formats]
+    for output_format in output_formats:
+        if output_format not in SUPPORTED_OUTPUT_FORMATS:
+            supported = ", ".join(sorted(SUPPORTED_OUTPUT_FORMATS))
+            raise ValueError(f"不支持的输出格式: {output_format}，仅支持: {supported}")
+
+
 
     element_formats = DEFAULT_ELEMENT_FORMATS.copy()
     element_formats.update(args.element_formats)
@@ -407,12 +440,13 @@ def main() -> None:
             file_path=image_path,
             timeout=args.timeout,
             api_key=api_key,
+            output_formats=output_formats,
             element_formats=element_formats,
             feature_config=feature_config,
             retries=args.retries,
         )
 
-        raw_json, text_bbox, markdown, somarkdown = build_outputs(
+        raw_json, text_bbox, markdown = build_outputs(
             response=response,
             image_path=image_path,
             include_without_bbox=args.include_without_bbox,
@@ -428,10 +462,7 @@ def main() -> None:
             markdown_path = output_dir / f"{image_path.stem}.md"
             markdown_path.write_text(markdown, encoding="utf-8")
 
-        somarkdown_path: Path | None = None
-        if somarkdown:
-            somarkdown_path = output_dir / f"{image_path.stem}-smd.md"
-            somarkdown_path.write_text(somarkdown, encoding="utf-8")
+        
 
         json_path: Path | None = None
         if args.save_json:
@@ -461,8 +492,7 @@ def main() -> None:
             "item_count": text_bbox["stats"]["item_count"],
             "page_count": text_bbox["stats"]["page_count"],
         }
-        if somarkdown_path:
-            entry["somarkdown"] = str(somarkdown_path)
+      
         if json_path:
             entry["json"] = str(json_path)
         if response_path:
