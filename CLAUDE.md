@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-SoMark Skills — a collection of AI agent skills for document parsing and image OCR, powered by the [SoMark](https://somark.ai) API. Skills are installable via `npx skills add https://github.com/SoMarkAI/skills` and work with Claude Code, Cursor, Cline, and other agents.
+SoMark Skills — a collection of AI agent skills for document parsing and image OCR, powered by the [SoMark](https://somark.ai) API. Skills are installable via `npx skills add https://github.com/SoMarkAI/skills` and work with Codex, Cursor, Cline, and other agents.
 
 ## Repository Structure
 
@@ -25,24 +25,45 @@ Each skill has three files: `SKILL.md` (frontmatter with name/description/metada
 
 ## Key Architecture Differences Between Skills
 
-- **image-parser** uses the **sync** SoMark endpoint (`/extract/acc_sync`) and stdlib-only (`urllib`). No external dependencies.
-- All other skills use the **async** SoMark endpoint (`/extract/async` + `/extract/async_check` polling) and require `aiohttp`.
+- **image-parser** uses the **sync** SoMark endpoint (`/parse/sync`) and stdlib-only (`urllib`). No external dependencies.
+- All other skills use the **async** SoMark endpoint (`/parse/async` + `/parse/async_check` polling) and require `aiohttp`.
 - **pitch-screener** additionally uses web search (via available MCP tools) for background research after parsing.
 
 ## Running the Scripts
 
 ```bash
+# Contract reviewer (single file)
+python skills/contract-reviewer/contract_reviewer.py -f <contract_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# Document diff (two files)
+python skills/document-diff/document_diff.py -f1 <original_file> -f2 <new_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# Financial report analyzer (single file)
+python skills/financial-report-analyzer/financial_report_analyzer.py -f <report_file> -o <output_dir> --output-formats '["markdown", "json", "somarkdown"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
 # Image parser (single file)
-python skills/image-parser/image_parser.py -f <image_path> -o <output_dir>
+python skills/image-parser/image_parser.py -f <image_path> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 
 # Image parser (directory)
-python skills/image-parser/image_parser.py -d <image_dir> -o <output_dir>
+python skills/image-parser/image_parser.py -d <image_dir> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 
-# Document parser (single file)
-python skills/somark-document-parser/somark_parser.py -f <file_path> -o <output_dir>
+# Paper digest (single file)
+python skills/paper-digest/paper_digest.py -f <paper_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 
-# Document parser (directory)
-python skills/somark-document-parser/somark_parser.py -d <dir_path> -o <output_dir>
+# Pitch screener (single file)
+python skills/pitch-screener/pitch_screener.py -f <pitch_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# Resume parser (single file)
+python skills/resume-parser/resume_parser.py -f <resume_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# SoMark document parser (single file)
+python skills/somark-document-parser/somark_parser.py -f <file_path> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# SoMark document parser (directory)
+python skills/somark-document-parser/somark_parser.py -d <dir_path> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
+
+# Tender analyzer (single file)
+python skills/tender-analyzer/tender_analyzer.py -f <tender_file> -o <output_dir> --output-formats '["markdown", "json"]' --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 ```
 
 Both scripts require the `SOMARK_API_KEY` environment variable.

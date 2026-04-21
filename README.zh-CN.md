@@ -18,7 +18,7 @@ npx skills add https://github.com/SoMarkAI/skills
 
 | Skill                         | 说明                                                                                            |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| **somark-document-parser**    | 将 PDF、Word、PowerPoint、图片解析为结构化 Markdown、JSON 或 SoMarkDown                         |
+| **somark-document-parser**    | 将 PDF、Word、PowerPoint、图片解析为结构化 Markdown、JSON 格式                                  |
 | **image-parser**              | 图片 OCR 基础能力，输出文本及精确坐标（OCR + 位置感知）                                         |
 | **document-diff**             | 比较两份文档，生成结构化差异报告，标注新增、删除和修改内容                                      |
 | **contract-reviewer**         | 审查合同风险、不平等条款、缺失条款及关键义务，附风险等级评定                                    |
@@ -32,7 +32,7 @@ npx skills add https://github.com/SoMarkAI/skills
 
 ## 功能说明
 
-当你把文档交给 AI Agent 时，SoMark 会将文档解析为结构化 Markdown、JSON 或 SoMarkDown，Agent 能基于结构进行准确理解，而不只是处理 OCR 后的纯文本。
+当你把文档交给 AI Agent 时，SoMark 会将文档解析为结构化 Markdown、JSON 格式，Agent 能基于结构进行准确理解，而不只是处理 OCR 后的纯文本。
 
 image-parser skill 进一步提供每个文本块在原图上的像素坐标，支持字段提取、区域定位和文档自动化等场景。
 
