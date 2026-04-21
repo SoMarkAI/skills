@@ -46,6 +46,7 @@ python document_diff.py \
   -f1 <original_file> \
   -f2 <new_file> \
   -o <output_dir> \
+  --output-formats '["markdown", "json"]' \
   --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' \
   --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 ```
@@ -55,6 +56,29 @@ python document_diff.py \
 **Supported formats:** `.pdf` `.png` `.jpg` `.jpeg` `.bmp` `.tiff` `.webp` `.heic` `.heif` `.gif` `.doc` `.docx` `.ppt` `.pptx`
 
 ### Optional parser settings
+
+#### `--output-formats` (Optional)
+
+This argument is optional in the current script. Pass a JSON array of one or more output formats.
+
+If omitted, the default value is:
+
+```json
+["markdown", "json"]
+```
+
+Supported values:
+
+| Value        | Description                                        |
+| ------------ | -------------------------------------------------- |
+| `markdown`   | Save the parsed document as a Markdown file        |
+| `json`       | Save the parsed document as a JSON output          |
+
+Example:
+
+```bash
+--output-formats '["markdown", "json"]'
+```
 
 #### `--element-formats` (Optional)
 
@@ -183,14 +207,15 @@ export SOMARK_API_KEY=your_key_here
 
 ## Error handling
 
-- Invalid JSON in `--element-formats` or `--feature-config`: ask the user to provide valid JSON syntax.
+- Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
 - Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
-- Invalid feature configuration value: tell the user that all `feature-config` values must be booleans (`true` or `false`).
+- Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - `1107` / Invalid API Key: ask the user to verify `SOMARK_API_KEY`.
 - File not found: confirm both paths are correct.
 - Unsupported format: list the supported extensions.
 - Parse result empty: warn the user and proceed with whatever content was returned.
-- Network timeout: suggest checking connectivity; the script parses the two documents sequentially, so a slow or failing request can delay the full comparison.
+- Network timeout: suggest checking connectivity; a slow or failing request can delay the full comparison.
 
 
 ---

@@ -14,6 +14,10 @@ SOMARK_BASE = "https://somark.tech/api/v1"
 ASYNC_URL = f"{SOMARK_BASE}/parse/async"
 CHECK_URL = f"{SOMARK_BASE}/parse/async_check"
 
+
+SUPPORTED_OUTPUT_FORMATS = {"markdown", "json"}
+
+
 SUPPORTED_FORMATS = {
     ".pdf",
     ".png",
@@ -47,6 +51,19 @@ DEFAULT_FEATURE_CONFIGS = {
     "enable_image_understanding": True,
     "keep_header_footer": False,
 }
+
+
+def parse_json_list(value: str) -> list[str]:
+    try:
+        parsed = json.loads(value)
+
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(f"数组参数必须是合法 JSON: {exc}") from exc
+
+    if not isinstance(parsed, list):
+        raise argparse.ArgumentTypeError(
+            '数组参数必须是 JSON 数组，例如 \'["markdown", "json"]\''
+        )
 
 
 def parse_json_dict(value: str) -> dict[str, Any]:
@@ -88,6 +105,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--output-formats",
+        type=parse_json_list,
+        default=["markdown", "json"],
+        help='输出格式，传 JSON 数组，例如 \'["markdown", "json"]\'',
+    )
+
+    parser.add_argument(
         "--element-formats",
         type=parse_json_dict,
         default={"image": "url", "formula": "latex", "table": "html", "cs": "image"},
@@ -124,12 +148,12 @@ def resolve_file(path_str: str) -> Path:
 
 
 async def submit_task(
-        session: aiohttp.ClientSession,
-        file_path: Path,
-        api_key: str,
-
-        element_formats: dict,
-        feature_config: dict,
+    session: aiohttp.ClientSession,
+    file_path: Path,
+    api_key: str,
+    output_formats: list[str],
+    element_formats: dict,
+    feature_config: dict,
 ) -> str:
     data = aiohttp.FormData()
 
@@ -138,9 +162,8 @@ async def submit_task(
     data.add_field("element_formats", json.dumps(element_formats, ensure_ascii=False))
     data.add_field("feature_config", json.dumps(feature_config, ensure_ascii=False))
 
-    data.add_field("output_formats", "markdown")
-    data.add_field("output_formats", "json")
-    data.add_field("output_formats", "somarkdown")
+    for output_format in output_formats:
+        data.add_field("output_formats", output_format)
 
     async with session.post(ASYNC_URL, data=data) as resp:
         if resp.status != 200:
@@ -155,16 +178,16 @@ async def submit_task(
 
 
 async def poll_task(
-        session: aiohttp.ClientSession,
-        task_id: str,
-        api_key: str,
-        max_retries: int = 300,
-        interval: int = 2,
+    session: aiohttp.ClientSession,
+    task_id: str,
+    api_key: str,
+    max_retries: int = 300,
+    interval: int = 2,
 ) -> dict:
     for _ in range(max_retries):
         await asyncio.sleep(interval)
         async with session.post(
-                CHECK_URL, data={"api_key": api_key, "task_id": task_id}
+            CHECK_URL, data={"api_key": api_key, "task_id": task_id}
         ) as resp:
             if resp.status != 200:
                 continue
@@ -182,14 +205,17 @@ async def poll_task(
 
 
 async def parse_document(
-        session: aiohttp.ClientSession,
-        file_path: Path,
-        api_key: str,
-        element_formats: dict,
-        feature_config: dict,
+    session: aiohttp.ClientSession,
+    file_path: Path,
+    api_key: str,
+    output_formats: list[str],
+    element_formats: dict,
+    feature_config: dict,
 ) -> dict:
     print(f"  提交解析: {file_path.name}")
-    task_id = await submit_task(session, file_path, api_key, element_formats, feature_config)
+    task_id = await submit_task(
+        session, file_path, api_key, output_formats, element_formats, feature_config
+    )
     print(f"  等待结果 (task_id={task_id})...")
     outputs = await poll_task(session, task_id, api_key)
     print(f"  解析完成: {file_path.name}")
@@ -200,10 +226,7 @@ def extract_markdown(outputs: dict, file_path: Path) -> str:
     md = outputs.get("markdown")
     if isinstance(md, str) and md.strip():
         return md
-    # 先尝试从 somarkdown 中提取
-    somarkdown = outputs.get("somarkdown")
-    if isinstance(somarkdown, str) and somarkdown.strip():
-        return somarkdown
+
     # 降级：从 json outputs 中提取纯文本
     json_data = outputs.get("json")
     if isinstance(json_data, dict):
@@ -269,8 +292,19 @@ async def main() -> None:
     file1 = resolve_file(args.file1)
     file2 = resolve_file(args.file2)
 
+    
+
     output_dir = Path(args.output).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_formats = args.output_formats
+
+    for output_format in output_formats:
+        if output_format not in SUPPORTED_OUTPUT_FORMATS:
+            supported = ", ".join(SUPPORTED_OUTPUT_FORMATS)
+
+            print(f"不支持的输出格式: {output_format}，仅支持: {supported}")
+            raise SystemExit(1)
 
     element_formats = args.element_formats
 
@@ -306,12 +340,12 @@ async def main() -> None:
     start = time.time()
 
     async with aiohttp.ClientSession() as session:
-        outputs1 = await parse_document(session, file1, api_key, element_formats, feature_config)
-        outputs2 = await parse_document(session, file2, api_key, element_formats, feature_config)
-        # outputs1, outputs2 = await asyncio.gather(
-        #     parse_document(session, file1, api_key, element_formats, feature_config),
-        #     parse_document(session, file2, api_key, element_formats, feature_config),
-        # )
+        outputs1 = await parse_document(
+            session, file1, api_key, output_formats, element_formats, feature_config
+        )
+        outputs2 = await parse_document(
+            session, file2, api_key, output_formats, element_formats, feature_config
+        )
 
     md1 = extract_markdown(outputs1, file1)
     md2 = extract_markdown(outputs2, file2)
