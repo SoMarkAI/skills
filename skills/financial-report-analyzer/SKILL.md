@@ -47,7 +47,7 @@ Example requests:
 python financial_report_analyzer.py \
   -f <report_file> \
   -o <output_dir> \
-  --output-formats '["markdown", "json", "somarkdown"]' \
+  --output-formats '["markdown", "json"]' \
   --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' \
   --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 ```
@@ -74,12 +74,11 @@ Supported values:
 | ------------ | ------------------------------------------- |
 | `markdown`   | Save the parsed report as a Markdown file   |
 | `json`       | Save the parsed report as a JSON output          |
-| `somarkdown` | Save the parsed report as a SoMarkDown text view |
 
 Example:
 
 ```bash
---output-formats '["markdown", "json", "somarkdown"]'
+--output-formats '["markdown", "json"]'
 ```
 
 #### `--element-formats` (Optional)
@@ -156,7 +155,6 @@ Example:
 
 - `<filename>.md` — full report in Markdown (preserves table structure)
 - `<filename>.json` — raw SoMark JSON (blocks with positions)
-- `<filename>-smd.md` — full report in SoMarkDown format when requested and returned by the parser
 - `parse_summary.json` — metadata (file path, elapsed time)
 
 ---
@@ -314,7 +312,7 @@ export SOMARK_API_KEY=your_key_here
 ## Error handling
 
 - Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
-- Unsupported output format: tell the user the supported values are `markdown`, `json`, and `somarkdown`.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
 - Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
 - Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - `1107` / Invalid API Key: ask the user to verify `SOMARK_API_KEY`.
