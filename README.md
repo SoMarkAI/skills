@@ -16,32 +16,32 @@ Works with Claude Code, Cursor, Cline, OpenCode, and [40+ other agents](https://
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| **somark-document-parser** | Parse PDFs, Word, PowerPoint, and images into structured Markdown or JSON |
-| **image-parser** | Extract text with bounding-box coordinates from images (OCR + precise location) |
-| **document-diff** | Compare two documents and generate a structured diff report showing changes, additions, and deletions |
-| **contract-reviewer** | Review contracts for risks, unfair clauses, missing provisions, and key obligations with severity ratings |
-| **resume-parser** | Parse resumes and CVs into structured JSON profiles with opinionated candidate assessment |
-| **tender-analyzer** | Extract qualification requirements, scoring criteria, deadlines, and submission checklists from procurement documents |
-| **paper-digest** | Deeply analyze academic papers into structured research cards covering methods, results, and contributions |
-| **financial-report-analyzer** | Extract financial metrics, risk signals, and management commentary from annual reports and earnings releases |
-| **pitch-screener** | Screen startup pitch decks from a VC/angel investor perspective — parses the deck, runs background research via web search, and produces a pre-meeting investment memo |
+| Skill                         | Description                                                                                                                                                            |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **somark-document-parser**    | Parse PDFs, Word, PowerPoint, and images into structured Markdown, JSON                                                                                                |
+| **image-parser**              | Core image OCR capability that returns text with precise coordinates (OCR + location awareness)                                                                        |
+| **document-diff**             | Compare two documents and generate a structured diff report showing changes, additions, and deletions                                                                  |
+| **contract-reviewer**         | Review contracts for risks, unfair clauses, missing provisions, and key obligations with severity ratings                                                              |
+| **resume-parser**             | Parse resumes and CVs into structured JSON profiles with opinionated candidate assessment                                                                              |
+| **tender-analyzer**           | Extract qualification requirements, scoring criteria, deadlines, and submission checklists from procurement documents                                                  |
+| **paper-digest**              | Deeply analyze academic papers into structured research cards covering methods, results, and contributions                                                             |
+| **financial-report-analyzer** | Extract financial metrics, risk signals, and management commentary from annual reports and earnings releases                                                           |
+| **pitch-screener**            | Screen startup pitch decks from a VC/angel investor perspective — parses the deck, runs background research via web search, and produces a pre-meeting investment memo |
 
 ---
 
 ## What it does
 
-When you share a document with your AI agent, SoMark parses it into structured Markdown or JSON that the agent can actually reason over — not just OCR'd text, but proper headings, tables, formulas, and layout.
+When you share a document with your AI agent, SoMark parses it into structured Markdown, JSON that the agent can actually reason over — not just OCR'd text, but proper headings, tables, formulas, and layout.
 
 The image-parser skill goes further: it returns every text block with its exact pixel coordinates on the original image, enabling field extraction, region location, and document automation.
 
 **Supported formats:**
 
-| Type | Formats |
-|------|---------|
-| Documents | PDF, DOC, DOCX, PPT, PPTX |
-| Images | PNG, JPG, JPEG, BMP, TIFF, WEBP, HEIC, HEIF, GIF |
+| Type      | Formats                                          |
+| --------- | ------------------------------------------------ |
+| Documents | PDF, DOC, DOCX, PPT, PPTX                        |
+| Images    | PNG, JPG, JPEG, BMP, TIFF, WEBP, HEIC, HEIF, GIF |
 
 **Example triggers:**
 
@@ -89,11 +89,11 @@ The result: your agent gives accurate, context-aware answers instead of hallucin
 
 ## Limits
 
-| Constraint | Limit |
-|------------|-------|
-| Max file size | 200 MB |
-| Max pages | 300 pages |
-| QPS per account | 1 |
+| Constraint      | Limit     |
+| --------------- | --------- |
+| Max file size   | 200 MB    |
+| Max pages       | 300 pages |
+| QPS per account | 1         |
 
 ---
 

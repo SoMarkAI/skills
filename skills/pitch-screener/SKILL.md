@@ -1,7 +1,7 @@
 ---
 name: pitch-screener
 description: Screen startup pitch decks (PDF, PowerPoint, images) from a VC/angel investor perspective. Parses the deck with SoMark to recover slide structure accurately, then runs web searches to independently verify key claims, then produces a concise pre-meeting investment memo covering founders, market, product, traction, and business model. Outputs an investment signal with clear reasoning. Requires SoMark API Key (SOMARK_API_KEY).
-metadata: {"openclaw": {"emoji": "🔭", "requires": {"env": ["SOMARK_API_KEY"]}, "primaryEnv": "SOMARK_API_KEY"}}
+metadata: { 'openclaw': { 'emoji': '🔭', 'requires': { 'env': ['SOMARK_API_KEY'] }, 'primaryEnv': 'SOMARK_API_KEY' } }
 ---
 
 # Pitch Screener
@@ -42,18 +42,113 @@ Example requests:
 ### User provides a file path
 
 ```bash
-python pitch_screener.py -f <deck_file> -o <output_dir>
+python pitch_screener.py \
+  -f <deck_file> \
+  -o <output_dir> \
+  --output-formats '["markdown", "json"]' \
+  --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' \
+  --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 ```
 
 **Script location:** `pitch_screener.py` in the same directory as this `SKILL.md`
 
 **Supported formats:** `.pdf` `.ppt` `.pptx` `.png` `.jpg` `.jpeg` `.bmp` `.tiff` `.webp` `.heic` `.heif` `.gif`
 
+### Parser settings
+
+#### `--output-formats` (Optional)
+
+This argument controls which parser outputs should be requested and saved.
+
+If omitted, the default value is:
+
+```json
+["markdown", "json"]
+```
+
+Supported values:
+
+| Value        | Description                                    |
+| ------------ | ---------------------------------------------- |
+| `markdown`   | Save the parsed deck as a Markdown file        |
+| `json`       | Save the parsed deck as a JSON output          |
+
+Example:
+
+```bash
+--output-formats '["markdown", "json"]'
+```
+
+#### `--element-formats` (Optional)
+
+This argument controls how specific element types are rendered in the parser output.
+
+If omitted, the default value is:
+
+```json
+{ "image": "url", "formula": "latex", "table": "html", "cs": "image" }
+```
+
+If you provide this argument, you may pass a partial JSON object. Any omitted keys continue using the default values.
+
+Supported keys, allowed values, and defaults:
+
+| Key       | Allowed values              | Default |
+| --------- | --------------------------- | ------- |
+| `image`   | `url`, `base64`, `none`     | `url`   |
+| `formula` | `latex`, `mathml`, `ascii`  | `latex` |
+| `table`   | `html`, `image`, `markdown` | `html`  |
+| `cs`      | `image`                     | `image` |
+
+Example:
+
+```bash
+--element-formats '{"image": "url", "table": "html"}'
+```
+
+#### `--feature-config` (Optional)
+
+This argument controls parser feature switches.
+
+If omitted, the default value is:
+
+```json
+{
+    "enable_text_cross_page": false,
+    "enable_table_cross_page": false,
+    "enable_title_level_recognition": false,
+    "enable_inline_image": true,
+    "enable_table_image": true,
+    "enable_image_understanding": true,
+    "keep_header_footer": false
+}
+```
+
+If you provide this argument, you may pass a partial JSON object. Any omitted keys continue using the default values. All values must be boolean (`true` or `false`).
+
+Supported keys and defaults:
+
+| Key                              | Default | Description                               |
+| -------------------------------- | ------- | ----------------------------------------- |
+| `enable_text_cross_page`         | `false` | Merge text content across page boundaries |
+| `enable_table_cross_page`        | `false` | Merge tables across page boundaries       |
+| `enable_title_level_recognition` | `false` | Recognize heading and title levels        |
+| `enable_inline_image`            | `true`  | Include inline image output               |
+| `enable_table_image`             | `true`  | Include table image output                |
+| `enable_image_understanding`     | `true`  | Enable image understanding features       |
+| `keep_header_footer`             | `false` | Preserve header and footer content        |
+
+Example:
+
+```bash
+--feature-config '{"enable_inline_image": true, "enable_table_image": true}'
+```
+
 ### Outputs
 
 - `<filename>.md` — full deck in Markdown (slide-by-slide)
-- `<filename>.json` — raw SoMark JSON (blocks with positions)
-- `parse_summary.json` — metadata (file path, elapsed time)
+- `<filename>.json` — JSON output (blocks with positions)
+- `parse_summary.json` — metadata (file path, output paths, elapsed time)
 
 After the script finishes, read the generated Markdown fully before proceeding.
 
@@ -77,26 +172,31 @@ After reading the deck, extract the following entities and run web searches for 
 Run searches in the company's primary language and in English where relevant.
 
 **1. Company**
+
 - `[公司名] 融资` / `[company name] funding`
 - `[公司名] 新闻` / `[company name] news`
 - `[公司名] 裁员 OR 纠纷 OR 负面` / `[company name] lawsuit OR layoff OR controversy`
 
 **2. Founders**
+
 - `[创始人姓名] [公司名]` — verify role and background
 - `[founder name] LinkedIn` or professional profile
 - `[创始人姓名] 之前创业 OR 上市公司` — prior companies, exits, track record
 
 **3. Market validation**
+
 - Search for independent market size data to cross-check deck claims
 - `[行业] 市场规模 2024` / `[industry] market size report`
 - Recent large funding rounds in the same space (signals investor interest or crowding)
 
 **4. Competitors**
+
 - Search for direct competitors the deck may have omitted or underplayed
 - `[product category] competitors` / `[细分市场] 竞争对手`
 - Recent funding or exits in the competitive landscape
 
 **5. Red flags**
+
 - `[公司名] 诉讼 OR 投诉 OR 工商` — litigation, regulatory issues, complaints
 - `[创始人姓名] 负面 OR 失信` — founder reputation issues
 
@@ -118,6 +218,7 @@ Structure the output as follows. Every claim must be backed by specific evidence
 ### Deal Snapshot
 
 One short paragraph. Cover:
+
 - What the company does (one sentence)
 - Stage and sector
 - Funding ask and implied valuation (if stated)
@@ -130,6 +231,7 @@ One short paragraph. Cover:
 **The core question: Are these the right people to solve this specific problem? Why them, why now?**
 
 Assess:
+
 - Domain expertise and founder-market fit — cite specific credentials or experience from deck and search results
 - Execution track record — prior companies, scale achieved, relevant exits
 - Team completeness — are key roles (tech, sales, ops) covered? What's missing?
@@ -146,6 +248,7 @@ End with one sentence verdict: **Strong / Adequate / Concern** — and why.
 **The core question: Is this a real, large, and growing market — and why is now the right time to enter?**
 
 Assess:
+
 - Claimed TAM/SAM/SOM — are the numbers credible? Bottom-up or top-down? Cross-check against search findings.
 - Growth driver — regulatory shift, technology change, behavior shift, or just a trend claim?
 - Why now — what has changed in the last 2–3 years that makes this timing right?
@@ -160,6 +263,7 @@ Flag if market size appears inflated (e.g., total industry revenue used as TAM).
 **The core question: What do they know or have that others don't?**
 
 Assess:
+
 - What the product does and how it works (avoid jargon — explain the mechanism)
 - The non-obvious insight behind it — what assumption or opportunity have they identified that the market has missed?
 - Technical or structural moat — IP, proprietary data, network effects, regulatory position
@@ -175,15 +279,15 @@ Assess:
 
 Extract and present key metrics directly from the deck. Use `Not stated` for any missing figure — do not estimate.
 
-| Metric | Value |
-|--------|-------|
-| Revenue (ARR/MRR or total) | |
-| Revenue growth (MoM or YoY) | |
-| Customer / user count | |
-| Key customer logos | |
-| Retention / churn | |
-| NPS or qualitative PMF signal | |
-| Other stage-appropriate metric | |
+| Metric                         | Value |
+| ------------------------------ | ----- |
+| Revenue (ARR/MRR or total)     |       |
+| Revenue growth (MoM or YoY)    |       |
+| Customer / user count          |       |
+| Key customer logos             |       |
+| Retention / churn              |       |
+| NPS or qualitative PMF signal  |       |
+| Other stage-appropriate metric |       |
 
 Assess whether traction is stage-appropriate. A pre-seed deck with no revenue is fine; a Series A deck with no retention data is not.
 
@@ -196,6 +300,7 @@ Flag cherry-picked metrics: absolute numbers without growth rate, or growth rate
 **The core question: Is there a clear, credible path from traction to a scalable business?**
 
 Assess:
+
 - Revenue model and pricing logic
 - Unit economics if disclosed (CAC, LTV, gross margin)
 - Payback period or path to profitability
@@ -222,6 +327,7 @@ Summarize what web searches revealed — organized by category. Be explicit abou
 List the top 3 reasons this deal could be a pass. Be direct — name the specific concern, not a generic category.
 
 Format:
+
 - **Risk 1:** [specific concern and why it matters]
 - **Risk 2:** [specific concern and why it matters]
 - **Risk 3:** [specific concern and why it matters]
@@ -269,6 +375,7 @@ If the user has not configured an API key:
 **Step 2:** Direct them to https://somark.tech/login, open "API Workbench" → "APIKey", and create a key in the format `sk-******`.
 
 **Step 3:** Ask them to run:
+
 ```bash
 export SOMARK_API_KEY=your_key_here
 ```
@@ -281,6 +388,10 @@ export SOMARK_API_KEY=your_key_here
 
 - `1107` / Invalid API Key: ask the user to verify `SOMARK_API_KEY`.
 - `2000` / Invalid parameters: check file path and format.
+- Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
+- Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
+- Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - File not found: confirm the path is correct.
 - Quota exceeded: direct to https://somark.tech/workbench/purchase.
 - Parsed content empty: the deck may use image-only slides; inform the user and proceed with whatever content was recovered.

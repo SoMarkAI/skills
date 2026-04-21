@@ -16,31 +16,31 @@ npx skills add https://github.com/SoMarkAI/skills
 
 ## Skills 列表
 
-| Skill | 说明 |
-|-------|------|
-| **somark-document-parser** | 将 PDF、Word、PowerPoint、图片解析为结构化 Markdown 或 JSON |
-| **image-parser** | 从图片中提取文本及精确坐标（OCR + 位置感知） |
-| **document-diff** | 比较两份文档，生成结构化差异报告，标注新增、删除和修改内容 |
-| **contract-reviewer** | 审查合同风险、不平等条款、缺失条款及关键义务，附风险等级评定 |
-| **resume-parser** | 将简历解析为结构化 JSON，并生成有观点的候选人评估报告 |
-| **tender-analyzer** | 从招标采购文件中提取资质要求、评分标准、关键截止日期和投标清单 |
-| **paper-digest** | 深度解析学术论文，生成涵盖方法、结果、贡献的结构化研究卡片 |
-| **financial-report-analyzer** | 从年报和财报中提取核心财务指标、风险信号和管理层表述 |
-| **pitch-screener** | 以 VC/天使投资人视角筛选创业 Pitch Deck —— 解析演示文稿、联网背调关键信息，生成见面前投资备忘录 |
+| Skill                         | 说明                                                                                            |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| **somark-document-parser**    | 将 PDF、Word、PowerPoint、图片解析为结构化 Markdown、JSON 格式                                  |
+| **image-parser**              | 图片 OCR 基础能力，输出文本及精确坐标（OCR + 位置感知）                                         |
+| **document-diff**             | 比较两份文档，生成结构化差异报告，标注新增、删除和修改内容                                      |
+| **contract-reviewer**         | 审查合同风险、不平等条款、缺失条款及关键义务，附风险等级评定                                    |
+| **resume-parser**             | 将简历解析为结构化 JSON，并生成有观点的候选人评估报告                                           |
+| **tender-analyzer**           | 从招标采购文件中提取资质要求、评分标准、关键截止日期和投标清单                                  |
+| **paper-digest**              | 深度解析学术论文，生成涵盖方法、结果、贡献的结构化研究卡片                                      |
+| **financial-report-analyzer** | 从年报和财报中提取核心财务指标、风险信号和管理层表述                                            |
+| **pitch-screener**            | 以 VC/天使投资人视角筛选创业 Pitch Deck —— 解析演示文稿、联网背调关键信息，生成见面前投资备忘录 |
 
 ---
 
 ## 功能说明
 
-当你把文档交给 AI Agent 时，SoMark 会将文档解析为结构化 Markdown 或 JSON，Agent 能基于结构进行准确理解，而不只是处理 OCR 后的纯文本。
+当你把文档交给 AI Agent 时，SoMark 会将文档解析为结构化 Markdown、JSON 格式，Agent 能基于结构进行准确理解，而不只是处理 OCR 后的纯文本。
 
 image-parser skill 进一步提供每个文本块在原图上的像素坐标，支持字段提取、区域定位和文档自动化等场景。
 
 **支持格式：**
 
-| 类型 | 格式 |
-|------|------|
-| 文档 | PDF, DOC, DOCX, PPT, PPTX |
+| 类型 | 格式                                             |
+| ---- | ------------------------------------------------ |
+| 文档 | PDF, DOC, DOCX, PPT, PPTX                        |
 | 图片 | PNG, JPG, JPEG, BMP, TIFF, WEBP, HEIC, HEIF, GIF |
 
 **触发示例：**
@@ -89,11 +89,11 @@ export SOMARK_API_KEY=sk-your-api-key
 
 ## 使用限制
 
-| 限制项 | 上限 |
-|--------|------|
+| 限制项     | 上限   |
+| ---------- | ------ |
 | 单文件大小 | 200 MB |
 | 单文件页数 | 300 页 |
-| 账号 QPS | 1 |
+| 账号 QPS   | 1      |
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: paper-digest
 description: Parse and deeply analyze academic papers (PDF, images) into structured research cards covering problem, methods, datasets, results, limitations, and contributions. Uses SoMark to accurately recover two-column layouts, formulas, tables, and figures before AI extraction. Ideal for literature review, research tracking, and knowledge base building. Requires SoMark API Key (SOMARK_API_KEY).
-metadata: {"openclaw": {"emoji": "🔬", "requires": {"env": ["SOMARK_API_KEY"]}, "primaryEnv": "SOMARK_API_KEY"}}
+metadata: { 'openclaw': { 'emoji': '🔬', 'requires': { 'env': ['SOMARK_API_KEY'] }, 'primaryEnv': 'SOMARK_API_KEY' } }
 ---
 
 # Paper Digest
@@ -44,18 +44,115 @@ Example requests:
 ### User provides a file path
 
 ```bash
-python paper_digest.py -f <paper_file> -o <output_dir>
+python paper_digest.py \
+  -f <paper_file> \
+  -o <output_dir> \
+  --output-formats '["markdown", "json"]' \
+  --element-formats '{"image": "url", "formula": "latex", "table": "html", "cs": "image"}' \
+  --feature-config '{"enable_text_cross_page": false, "enable_table_cross_page": false, "enable_title_level_recognition": false, "enable_inline_image": true, "enable_table_image": true, "enable_image_understanding": true, "keep_header_footer": false}'
 ```
 
 **Script location:** `paper_digest.py` in the same directory as this `SKILL.md`
 
 **Supported formats:** `.pdf` `.png` `.jpg` `.jpeg` `.bmp` `.tiff` `.webp` `.heic` `.heif` `.gif` `.doc` `.docx`
 
+### Optional parser settings
+
+#### `--output-formats` (Optional)
+
+This argument controls which parser outputs should be requested and saved.
+
+If omitted, the default value is:
+
+```json
+["markdown", "json"]
+```
+
+If you provide this argument, you may pass a partial JSON object. Any omitted keys continue using the default values.
+
+Supported keys, allowed values, and defaults:
+
+| Key          | Allowed values                                  |
+| ------------ | ----------------------------------------------- |
+| `markdown`   | Save the parsed paper as a Markdown file        |
+| `json`       | Save the parsed paper as a JSON output          |
+
+Example:
+
+```bash
+--output-formats '["markdown", "json"]'
+```
+
+#### `--element-formats` (Optional)
+
+This argument controls how specific element types are rendered in the parser output.
+
+If omitted, the default value is:
+
+```json
+{ "image": "url", "formula": "latex", "table": "html", "cs": "image" }
+```
+
+If you provide this argument, you may pass a partial JSON object. Any omitted keys continue using the default values.
+
+Supported keys, allowed values, and defaults:
+
+| Key       | Allowed values              | Default |
+| --------- | --------------------------- | ------- |
+| `image`   | `url`, `base64`, `none`     | `url`   |
+| `formula` | `latex`, `mathml`, `ascii`  | `latex` |
+| `table`   | `html`, `image`, `markdown` | `html`  |
+| `cs`      | `image`                     | `image` |
+
+Example:
+
+```bash
+--element-formats '{"image": "url", "table": "html"}'
+```
+
+#### `--feature-config` (Optional)
+
+This argument controls parser feature switches.
+
+If omitted, the default value is:
+
+```json
+{
+    "enable_text_cross_page": false,
+    "enable_table_cross_page": false,
+    "enable_title_level_recognition": false,
+    "enable_inline_image": true,
+    "enable_table_image": true,
+    "enable_image_understanding": true,
+    "keep_header_footer": false
+}
+```
+
+If you provide this argument, you may pass a partial JSON object. Any omitted keys continue using the default values. All values must be boolean (`true` or `false`).
+
+Supported keys and defaults:
+
+| Key                              | Default | Description                               |
+| -------------------------------- | ------- | ----------------------------------------- |
+| `enable_text_cross_page`         | `false` | Merge text content across page boundaries |
+| `enable_table_cross_page`        | `false` | Merge tables across page boundaries       |
+| `enable_title_level_recognition` | `false` | Recognize heading and title levels        |
+| `enable_inline_image`            | `true`  | Include inline image output               |
+| `enable_table_image`             | `true`  | Include table image output                |
+| `enable_image_understanding`     | `true`  | Enable image understanding features       |
+| `keep_header_footer`             | `false` | Preserve header and footer content        |
+
+Example:
+
+```bash
+--feature-config '{"enable_inline_image": true, "enable_table_image": true}'
+```
+
 ### Outputs
 
 - `<filename>.md` — full paper in Markdown (correct reading order)
-- `<filename>.json` — raw SoMark JSON (blocks with positions)
-- `parse_summary.json` — metadata (file path, elapsed time)
+- `<filename>.json` — JSON output (blocks with positions)
+- `parse_summary.json` — metadata (file path, output paths, elapsed time)
 
 ---
 
@@ -65,14 +162,14 @@ After the script finishes, read the generated Markdown and extract the following
 
 ### 1. Bibliographic info
 
-| 字段 | 内容 |
-|------|------|
-| 标题 | |
-| 作者 | |
-| 机构 | |
-| 发表年份 | |
-| 发表venue | （会议/期刊名称，如 NeurIPS 2024, Nature, CVPR） |
-| arXiv / DOI | |
+| 字段        | 内容                                             |
+| ----------- | ------------------------------------------------ |
+| 标题        |                                                  |
+| 作者        |                                                  |
+| 机构        |                                                  |
+| 发表年份    |                                                  |
+| 发表venue   | （会议/期刊名称，如 NeurIPS 2024, Nature, CVPR） |
+| arXiv / DOI |                                                  |
 
 ### 2. Research card
 
@@ -82,26 +179,31 @@ After the script finishes, read the generated Markdown and extract the following
 这篇论文试图解决什么问题？现有方法的局限性是什么？
 
 **核心贡献**（按重要性排列）
+
 1. ...
 2. ...
 3. ...
 
 **方法**
+
 - 整体思路和框架
 - 关键技术创新点
 - 与baseline的核心区别
 
 **实验设置**
+
 - 数据集（名称、规模、领域）
 - 评估指标
 - 对比的baseline方法
 
 **主要结果**
+
 - 量化结果（关键数字，如准确率、F1、BLEU等）
 - 与SOTA对比情况
 - 消融实验关键发现
 
 **局限性与未来工作**
+
 - 作者承认的局限
 - 未解决的问题
 - 建议的未来方向
@@ -165,7 +267,7 @@ Structure the output as:
 If the user provides multiple papers, process them sequentially and at the end present a **comparison table**:
 
 | 论文 | 问题 | 方法 | 数据集 | 主要结果 | 新颖性评分 |
-|------|------|------|--------|---------|-----------|
+| ---- | ---- | ---- | ------ | -------- | ---------- |
 
 ---
 
@@ -178,6 +280,7 @@ If the user has not configured an API key:
 **Step 2:** Direct them to https://somark.tech/login, open "API Workbench" → "APIKey", and create a key in the format `sk-******`.
 
 **Step 3:** Ask them to run:
+
 ```bash
 export SOMARK_API_KEY=your_key_here
 ```
@@ -190,6 +293,10 @@ export SOMARK_API_KEY=your_key_here
 
 - `1107` / Invalid API Key: ask the user to verify `SOMARK_API_KEY`.
 - `2000` / Invalid parameters: check file path and format.
+- Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
+- Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
+- Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - File not found: confirm the path is correct.
 - Quota exceeded: direct to https://somark.tech/workbench/purchase.
 - Parsed content appears incomplete: very long papers (>50 pages) may be proceedings volumes rather than single papers; ask the user to confirm.
