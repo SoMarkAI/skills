@@ -65,6 +65,16 @@ def parse_json_list(value: str) -> list[str]:
             '数组参数必须是 JSON 数组，例如 \'["markdown", "json"]\''
         )
 
+    normalized: list[str] = []
+    for item in parsed:
+        if not isinstance(item, str) or not item.strip():
+            raise argparse.ArgumentTypeError("数组参数中的每一项都必须是非空字符串")
+
+        normalized.append(item.strip())
+
+    return normalized
+
+
 
 def parse_json_dict(value: str) -> dict[str, Any]:
     try:
