@@ -73,12 +73,13 @@ Supported values:
 | ------------ | ------------------------------------------------ |
 | `markdown`   | Save the parsed resume as a Markdown file        |
 | `json`       | Save the parsed resume as a JSON output          |
-| `somarkdown` | Save the parsed resume as a SoMarkDown text view |
+
+
 
 Example:
 
 ```bash
---output-formats '["markdown", "json", "somarkdown"]'
+--output-formats '["markdown", "json"]'
 ```
 
 #### `--element-formats` (Optional)
@@ -150,7 +151,6 @@ Example:
 
 - `<filename>.md` — full resume in Markdown (preserves structure)
 - `<filename>.json` — raw SoMark JSON (blocks with positions)
-- `<filename>-smd.md` — SoMarkDown text view when requested and returned by the parser
 - `parse_summary.json` — metadata (file path, output paths, elapsed time)
 
 ---
@@ -302,7 +302,7 @@ export SOMARK_API_KEY=your_key_here
 - `1107` / Invalid API Key: ask the user to verify `SOMARK_API_KEY`.
 - `2000` / Invalid parameters: check file path and format.
 - Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
-- Unsupported output format: tell the user the supported values are `markdown`, `json`, and `somarkdown`.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
 - Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
 - Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - File not found: confirm the path is correct.
