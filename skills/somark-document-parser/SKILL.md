@@ -117,12 +117,12 @@ Supported values:
 | ------------ | -------------------------------------------------- |
 | `markdown`   | Save the parsed document as a Markdown file        |
 | `json`       | Save the parsed document as a JSON output          |
-| `somarkdown` | Save the parsed document as a SoMarkDown text view |
+
 
 Example:
 
 ```bash
---output-formats '["markdown", "json", "somarkdown"]'
+--output-formats '["markdown", "json"]'
 ```
 
 #### `--element-formats` (Optional)
@@ -243,8 +243,7 @@ Once setup is complete, proceed with parsing.
 Output files per successfully parsed document:
 
 - `<filename>.md` — Markdown output when requested and returned by SoMark
-- `<filename>.json` — raw SoMark JSON output when requested and returned by SoMark
-- `<filename>-smd.md` — SoMarkdown text view when requested and returned by SoMark
+- `<filename>.json` — JSON output when requested and returned by SoMark
 - `results_index.json` — run-level index containing input path, request options, and per-file results
 
 In directory mode, use `results_index.json` as the primary index of which files succeeded or failed.
@@ -258,7 +257,7 @@ If parsing fails, explain the reason based on the error code:
 - `1107`: Invalid API key. Ask the user to verify their environment variable configuration.
 - `2000`: Invalid request parameters.
 - Invalid JSON in `--output-formats`, `--element-formats`, or `--feature-config`: ask the user to provide valid JSON syntax.
-- Unsupported output format: tell the user the supported values are `markdown`, `json`, and `somarkdown`.
+- Unsupported output format: tell the user the supported values are `markdown`, `json`.
 - Unsupported element format: tell the user to use only supported keys and values for `image`, `formula`, `table`, and `cs`.
 - Invalid feature configuration value: tell the user that all `feature-config` values must be booleans.
 - File too large or too many pages (`200MB` / `300` pages): Ask the user to split the file.

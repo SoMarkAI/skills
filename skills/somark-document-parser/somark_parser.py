@@ -38,7 +38,7 @@ SUPPORTED_FORMATS = {
     ".pptx",
 }
 
-SUPPORTED_OUTPUT_FORMATS = {"markdown", "json", "somarkdown"}
+SUPPORTED_OUTPUT_FORMATS = {"markdown", "json"}
 
 SUPPORTED_ELEMENT_FORMATS = {
     "image": ["url", "base64", "none"],
@@ -282,11 +282,12 @@ def save_outputs(
 ) -> dict[str, Any]:
     md_content = outputs.get("markdown", "")
     json_content = outputs.get("json", {})
-    somarkdown_content = outputs.get("somarkdown", "")
+
 
     md_path = output_dir / f"{file_path.stem}.md"
     json_path = output_dir / f"{file_path.stem}.json"
-    somarkdown_path = output_dir / f"{file_path.stem}-smd.md"
+ 
+
 
     if md_content:
         md_path.write_text(md_content, encoding="utf-8")
@@ -298,9 +299,7 @@ def save_outputs(
         )
         print(f"  JSON 已保存: {json_path}")
 
-    if somarkdown_content:
-        somarkdown_path.write_text(somarkdown_content, encoding="utf-8")
-        print(f"  SoMarkdown 已保存: {somarkdown_path}")
+   
 
     page_count, token_count = extract_metadata(outputs)
     return {
@@ -308,7 +307,7 @@ def save_outputs(
         "file": str(file_path),
         "markdown": str(md_path) if md_content else None,
         "json": str(json_path) if json_content else None,
-        "somarkdown": str(somarkdown_path) if somarkdown_content else None,
+       
         "page_count": page_count,
         "token_count": token_count,
     }
