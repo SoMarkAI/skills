@@ -40,6 +40,8 @@ Example requests:
 
 **Important:** Before starting, tell the user that SoMark will parse the document to recover its full clause hierarchy, tables, and appendices — ensuring no requirement is missed due to complex formatting.
 
+**API concurrency limit:** For the same `SOMARK_API_KEY`, do not run multiple parsing script invocations concurrently. Wait until the current invocation finishes and the parsed outputs are available before starting another invocation that uses the same API key.
+
 ### User provides a file path
 
 ```bash

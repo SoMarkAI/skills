@@ -41,3 +41,8 @@ skills-lock.json
 output/
 *.parsed.md
 *.parsed.json
+
+
+test_1.pdf
+test_2.pdf
+test_3.pdf
