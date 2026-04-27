@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "source": "https://github.com/SoMarkAI/skills",
+  "generated_at": "2026-04-27T10:20:03Z",
+  "skills": {
+    "contract-reviewer": {
+      "version": "0.1.2",
+      "path": "skills/contract-reviewer",
+      "files": {
+        "SKILL.md": {
+          "sha256": "4495ce8de8b0de7538b6a8402b8cd21ceef6b9ecf56f52abc1b0e36dc79e931f"
+        },
+        "_meta.json": {
+          "sha256": "8e0a557f237c9d7ff62bacf7052b09a916f2e45d8199b53ac2b70925e1a73135"
+        },
+        "contract_reviewer.py": {
+          "sha256": "520456c45e90e62a599407b5871a636ee91b6b3747ce26960812f41b9e2f8f01"
+        }
+      }
+    },
+    "document-diff": {
+      "version": "0.1.2",
+      "path": "skills/document-diff",
+      "files": {
+        "SKILL.md": {
+          "sha256": "60274ac5925db9a351a3fae5e97c4a102b31a4f463d7b8e7c2699843a7450be4"
+        },
+        "_meta.json": {
+          "sha256": "7320befe472341761ee0be58f72d253d7cf203c488801845305008c1d991afca"
+        },
+        "document_diff.py": {
+          "sha256": "99274e3bc3bb1677df32eea6a5211764c661bc19be3eda83ca1d93d67aa0f3b6"
+        }
+      }
+    },
+    "financial-report-analyzer": {
+      "version": "0.1.2",
+      "path": "skills/financial-report-analyzer",
+      "files": {
+        "SKILL.md": {
+          "sha256": "334e6a5770d214804a8f8facc34db2f9cb7172bc9dabf26eb00871b5ca57cab2"
+        },
+        "_meta.json": {
+          "sha256": "5d6310b7d84645a52152ee97939c15ad263627cab207d162f4dc25226b62f50a"
+        },
+        "financial_report_analyzer.py": {
+          "sha256": "18c58cf3e8de7248218057da33a59d6b40501d6704fd374e1686a5a7b53b7238"
+        }
+      }
+    },
+    "image-parser": {
+      "version": "0.1.2",
+      "path": "skills/image-parser",
+      "files": {
+        "SKILL.md": {
+          "sha256": "15611a1b75891239236f460501ad5e8626e07bd0a78a33836fba294ad996ab12"
+        },
+        "_meta.json": {
+          "sha256": "d37406f6aec952577d6bc11f3897705faa38ad2643adafffebb526df3a971ff6"
+        },
+        "image_parser.py": {
+          "sha256": "2be5a2af3e6617b985a03f7e309440c4436a16e4bd2449b74aa5004d45ac028c"
+        }
+      }
+    },
+    "paper-digest": {
+      "version": "0.1.2",
+      "path": "skills/paper-digest",
+      "files": {
+        "SKILL.md": {
+          "sha256": "d7b0a993b45cc319ada277efb964957712e0819a847a27618c13a1f213b4be67"
+        },
+        "_meta.json": {
+          "sha256": "602c76e6717dbf2e1a6b66c6d37537ddb1550088d47fc25f4e62627c4b98f256"
+        },
+        "paper_digest.py": {
+          "sha256": "75fda8a46909866628cefab10a8315f266d9580abdb694ed4e2426144b0a9080"
+        }
+      }
+    },
+    "pitch-screener": {
+      "version": "1.0.2",
+      "path": "skills/pitch-screener",
+      "files": {
+        "SKILL.md": {
+          "sha256": "422e5e7d3a8c90abcbf991c6e83882a412997d2b7f8e590a20437313a32d2f48"
+        },
+        "_meta.json": {
+          "sha256": "cef579011025afbbdc8c76df1b4c5ead598f0c5a4ca39eb603bd12537db21263"
+        },
+        "pitch_screener.py": {
+          "sha256": "839925cc069e456953f768dcb0ba7aae5a0623e0d3ac84742adf6a4c846a9143"
+        }
+      }
+    },
+    "resume-parser": {
+      "version": "0.1.2",
+      "path": "skills/resume-parser",
+      "files": {
+        "SKILL.md": {
+          "sha256": "5372e2d8eb45230d01cbdee0e919c9075d403e4c2c157e6f41ea8081c88c3dd8"
+        },
+        "_meta.json": {
+          "sha256": "5768c9e57315d5def931d9ef5a80872e1268df03b1ea4bf0bfd69e9702ceb203"
+        },
+        "resume_parser.py": {
+          "sha256": "ccde2c2610e7d2b2ea4f95b7137e1a6c80fc97ffa720381a7a235567119c16d8"
+        }
+      }
+    },
+    "somark-document-parser": {
+      "version": "1.0.9",
+      "path": "skills/somark-document-parser",
+      "files": {
+        "SKILL.md": {
+          "sha256": "151d73c29fff5ac7644ef6b0c1a25b540d91cddfa2f8ce034b5b342d72a7d279"
+        },
+        "_meta.json": {
+          "sha256": "8f3e2c2197b5e582e2ede52402a5ad0c3a2cc88dc78ff4872e37dc3a5b77ab53"
+        },
+        "somark_parser.py": {
+          "sha256": "e8c7600597072c679edddd92c7c87cac3cc22c40b26e6f87a07dd591e3d45579"
+        }
+      }
+    },
+    "tender-analyzer": {
+      "version": "0.1.2",
+      "path": "skills/tender-analyzer",
+      "files": {
+        "SKILL.md": {
+          "sha256": "d725781799287eb33dff8896dfd3b942d5baa6c1261df53a2c533d2377b4ff0e"
+        },
+        "_meta.json": {
+          "sha256": "df4cfcb030bb56e5af4e82a161d891990fa198f7e81887b0974c83d0e135b6e7"
+        },
+        "tender_analyzer.py": {
+          "sha256": "8733b0400cfd2c46ae60861563e6924b0b6ab763651fad557f007aca1c6f3473"
+        }
+      }
+    }
+  }
+}
