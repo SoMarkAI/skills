@@ -40,6 +40,8 @@ Example requests:
 
 **Important:** Before starting, tell the user that SoMark will parse the resume to preserve its exact layout and formatting, enabling accurate field extraction from even complex multi-column or image-based designs.
 
+**API concurrency limit:** For the same `SOMARK_API_KEY`, do not run multiple parsing script invocations concurrently. Wait until the current invocation finishes and the parsed outputs are available before starting another invocation that uses the same API key.
+
 ### User provides a file path
 
 ```bash

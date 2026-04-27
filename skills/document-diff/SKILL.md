@@ -39,6 +39,8 @@ Example requests:
 
 **Important:** Before starting, tell the user that SoMark will parse both documents into clean Markdown first, enabling an accurate content-level diff rather than a raw binary comparison.
 
+**API concurrency limit:** For the same `SOMARK_API_KEY`, do not run multiple parsing script invocations concurrently. Wait until the current invocation finishes and the parsed outputs are available before starting another invocation that uses the same API key.
+
 ### User provides two file paths
 
 ```bash

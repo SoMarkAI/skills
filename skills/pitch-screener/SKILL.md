@@ -39,6 +39,8 @@ Example requests:
 
 **Important:** Before starting, tell the user that SoMark will parse the deck to recover its full slide structure and layout, ensuring no data point is missed regardless of the original design.
 
+**API concurrency limit:** For the same `SOMARK_API_KEY`, do not run multiple parsing script invocations concurrently. Wait until the current invocation finishes and the parsed outputs are available before starting another invocation that uses the same API key.
+
 ### User provides a file path
 
 ```bash
