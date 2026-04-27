@@ -64,21 +64,6 @@ DEFAULT_FEATURE_CONFIGS = {
     "keep_header_footer": False,
 }
 
-REQUEST_LOCK = asyncio.Lock()
-
-
-async def post_json(
-    session: aiohttp.ClientSession,
-    url: str,
-    **kwargs: Any,
-) -> tuple[int, Any]:
-    async with REQUEST_LOCK:
-        async with session.post(url, **kwargs) as response:
-            status = response.status
-            if status != 200:
-                return status, await response.text()
-            return status, await response.json()
-
 
 def parse_json_list(value: str) -> list[str]:
     try:
@@ -236,9 +221,11 @@ async def submit_task(
     data.add_field("element_formats", json.dumps(element_formats, ensure_ascii=False))
     data.add_field("feature_config", json.dumps(feature_config, ensure_ascii=False))
 
-    status, body = await post_json(session, ASYNC_URL, data=data)
-    if status != 200:
-        raise RuntimeError(f"提交任务失败 [{status}]: {body}")
+    async with session.post(ASYNC_URL, data=data) as response:
+        if response.status != 200:
+            error_text = await response.text()
+            raise RuntimeError(f"提交任务失败 [{response.status}]: {error_text}")
+        body = await response.json()
 
     task_id = (body.get("data") or {}).get("task_id")
     if not task_id:
@@ -255,11 +242,12 @@ async def poll_task(
 ) -> dict[str, Any]:
     for _ in range(max_retries):
         await asyncio.sleep(interval)
-        status, body = await post_json(
-            session, CHECK_URL, data={"api_key": api_key, "task_id": task_id}
-        )
-        if status != 200:
-            continue
+        async with session.post(
+            CHECK_URL, data={"api_key": api_key, "task_id": task_id}
+        ) as response:
+            if response.status != 200:
+                continue
+            body = await response.json()
 
         data = body.get("data") or {}
         status = data.get("status")
@@ -393,8 +381,7 @@ async def main() -> None:
     print(f"输出目录: {output_dir}")
 
     results: list[dict[str, Any]] = []
-    connector = aiohttp.TCPConnector(limit=1, limit_per_host=1)
-    async with aiohttp.ClientSession(connector=connector) as session:
+    async with aiohttp.ClientSession() as session:
         for file_path in files_list:
             entry = await process_file_async(
                 session,
