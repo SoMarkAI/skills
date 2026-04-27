@@ -1,4 +1,6 @@
 {
   "slug": "contract-reviewer",
-  "version": "0.1.2"
+  "version": "0.1.2",
+  "source": "https://github.com/SoMarkAI/skills",
+  "channel": "stable"
 }

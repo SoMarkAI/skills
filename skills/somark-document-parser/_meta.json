@@ -1,4 +1,6 @@
 {
   "slug": "somark-document-parser",
-  "version": "1.0.9"
+  "version": "1.0.9",
+  "source": "https://github.com/SoMarkAI/skills",
+  "channel": "stable"
 }
