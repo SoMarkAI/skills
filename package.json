@@ -1,0 +1,14 @@
+{
+  "name": "somark-skills",
+  "version": "0.1.0",
+  "description": "Install and update SoMark AI skills",
+  "bin": {
+    "somark-skills": "bin/somark-skills.js"
+  },
+  "type": "commonjs",
+  "files": [
+    "bin/",
+    "scripts/somark_skills_update.py"
+  ],
+  "license": "MIT"
+}

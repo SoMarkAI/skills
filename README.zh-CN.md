@@ -12,6 +12,43 @@ npx skills add https://github.com/SoMarkAI/skills
 
 兼容 Claude Code、Cursor、Cline、OpenCode 及 [40+ 其他 Agent](https://skills.sh)。
 
+### 初始化更新锁
+
+安装完成后，为刚才选择的 skills 安装目录初始化更新锁：
+
+```bash
+npx somark-skills init --install-dir <skills安装目录>
+```
+
+示例：
+
+```bash
+npx somark-skills init --install-dir ~/.agents/skills
+```
+
+如果你把 SoMark Skills 安装到了多个目录，请分别对每个目录执行初始化：
+
+```bash
+npx somark-skills init --install-dir ~/.agents/skills
+npx somark-skills init --install-dir ./.agents/skills
+```
+
+### 更新 Skills
+
+更新当前安装目录中已有的 SoMark Skills：
+
+```bash
+npx somark-skills update --install-dir <skills安装目录>
+```
+
+如果希望根据远端清单补齐所有 SoMark Skills，包括本地尚未安装的 skill：
+
+```bash
+npx somark-skills update --all --install-dir <skills安装目录>
+```
+
+更新器会在每个安装目录下维护独立的 `.somark-skills.lock.json`。如果检测到某个 skill 的本地文件被用户修改，更新器会跳过该 skill，不会自动覆盖本地修改。更新前会备份旧文件到 `.somark-skills-backups`。
+
 ---
 
 ## Skills 列表

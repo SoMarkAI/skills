@@ -1,4 +1,6 @@
 {
   "slug": "pitch-screener",
-  "version": "1.0.2"
+  "version": "1.0.2",
+  "source": "https://github.com/SoMarkAI/skills",
+  "channel": "stable"
 }
