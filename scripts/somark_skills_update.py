@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import argparse
 import hashlib
 import json
 import shutil
@@ -10,13 +13,8 @@ from typing import Any, List
 LOCK_FILENAME = ".somark-skills.lock.json"  # 锁文件名
 BACKUP_DIRNAME = ".somark-skills-backups"  # 备份目录名
 DEFAULT_SOURCE = "https://github.com/SoMarkAI/skills"  # 默认skill仓库地址
-MANIFEST_URL = "https://raw.githubusercontent.com/SoMarkAI/skills/lty/feat/skill-auto-update/manifest.json"
-RAW_BASE_URL = "https://raw.githubusercontent.com/SoMarkAI/skills/lty/feat/skill-auto-update"
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_PATH = REPO_ROOT / "manifest.json"
-DEFAULT_INSTALL_DIR = Path("/Users/limuting/Desktop/soulcode/skills/tests/.agents/skills")
-
+MANIFEST_URL = "https://raw.githubusercontent.com/SoMarkAI/skills/refs/heads/lty/feat/skill-auto-update/manifest.json"
+RAW_BASE_URL = "https://raw.githubusercontent.com/SoMarkAI/skills/refs/heads/lty/feat/skill-auto-update"
 
 def sha256_file(file_path: Path) -> str:
     """
@@ -235,11 +233,16 @@ def remote_is_newer(local_version: str, remote_version: str) -> bool:
     return remote_version_tuple > local_version_tuple
 
 
-def find_updates(lock: dict[str, Any], manifest: dict[str, Any]) -> List[dict[str, str]]:
+def find_updates(
+        lock: dict[str, Any],
+        manifest: dict[str, Any],
+        include_not_installed: bool = False,
+) -> List[dict[str, str]]:
     """
     比较本地 lock 和远端 manifest，找出需要更新的 skill
     :param lock: 锁文件内容
     :param manifest: manifest.json内容
+    :param include_not_installed: 是否将未安装的 skill 纳入更新
     :return: 需要更新的 skill 列表
     """
     updates: list[dict[str, str]] = []
@@ -263,6 +266,8 @@ def find_updates(lock: dict[str, Any], manifest: dict[str, Any]) -> List[dict[st
         local_info = local_skills.get(slug)
 
         if local_info is None:
+            if not include_not_installed:
+                continue
             updates.append({
                 "slug": slug,
                 "reason": "not_installed",
@@ -669,22 +674,61 @@ def print_update_plan(
             print(f"- {item['slug']}: {', '.join(item['modified_files'])}")
 
 
-def main() -> None:
-    if not DEFAULT_INSTALL_DIR.exists():
-        raise FileNotFoundError(f"安装目录不存在: {DEFAULT_INSTALL_DIR}")
+def parse_args() -> argparse.Namespace:
+    """
+    解析命令行参数
+    :return: 命令行参数
+    """
+    parser = argparse.ArgumentParser(description="Install lock and update SoMark skills")
+    parser.add_argument(
+        "--install-dir",
+        type=Path,
+        required=True,
+        help="skills 安装目录，例如 ~/.agents/skills 或 ./.agents/skills",
+    )
+    parser.add_argument(
+        "--init-lock",
+        action="store_true",
+        help="初始化 lock 文件",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="更新/安装 manifest 中所有 skills；默认只更新已安装 skills",
+    )
+    return parser.parse_args()
 
-    lock = read_lock(DEFAULT_INSTALL_DIR)
-    if lock is None:
-        lock = generate_lock(DEFAULT_INSTALL_DIR)
-        write_lock(DEFAULT_INSTALL_DIR, lock)
-        print(f"lock 已生成: {DEFAULT_INSTALL_DIR / LOCK_FILENAME}")
+
+def main() -> None:
+    args = parse_args()
+    install_dir = args.install_dir.expanduser().resolve()
+
+    if args.init_lock:
+        install_dir.mkdir(parents=True, exist_ok=True)
+        lock = generate_lock(install_dir)
+        write_lock(install_dir, lock)
+        print(f"lock 已生成: {install_dir / LOCK_FILENAME}")
         return
 
+    if not install_dir.exists():
+        raise FileNotFoundError(f"安装目录不存在: {install_dir}")
+
+    lock = read_lock(install_dir)
+    if lock is None:
+        raise RuntimeError(
+            f"未找到 lock 文件: {install_dir / LOCK_FILENAME}\n"
+            "请先运行: npx somark-skills init --install-dir <skills目录>"
+        )
+
     manifest = download_manifest()
-    updates = find_updates(lock, manifest)
+    updates = find_updates(
+        lock=lock,
+        manifest=manifest,
+        include_not_installed=args.all,
+    )
 
     safe_updates, skipped_updates = classify_updates_by_local_changes(
-        install_dir=DEFAULT_INSTALL_DIR,
+        install_dir=install_dir,
         lock=lock,
         updates=updates,
     )
@@ -700,14 +744,14 @@ def main() -> None:
 
     if verified_updates:
         apply_verified_updates(
-            install_dir=DEFAULT_INSTALL_DIR,
+            install_dir=install_dir,
             lock=lock,
             verified_updates=verified_updates,
         )
 
-        new_lock = generate_lock(DEFAULT_INSTALL_DIR)
-        write_lock(DEFAULT_INSTALL_DIR, new_lock)
-        print(f"lock 已更新: {DEFAULT_INSTALL_DIR / LOCK_FILENAME}")
+        new_lock = generate_lock(install_dir)
+        write_lock(install_dir, new_lock)
+        print(f"lock 已更新: {install_dir / LOCK_FILENAME}")
 
 
 if __name__ == "__main__":
